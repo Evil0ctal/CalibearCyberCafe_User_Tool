@@ -3,11 +3,11 @@ import json
 import re
 
 def check(email):
-    regex = '\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b'
-    if (re.search(regex, email)):
-        return ("Valid Email")
-    else:
+    regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
+    if not regex.match(email):
         return ("Invalid Email")
+    else:
+        return ("Valid Email")
 
 def registration(email):
     if check(email) == "Valid Email":
@@ -28,9 +28,7 @@ def activation(activation_code):
     try:
         activation_payload = {"activation_code": str(activation_code)}
         activation_url = "https://calibear.bebooking.enes.tech/user/" + str(registration(email)) + "/activate/"
-        #print(activation_url)
         activation_response = requests.post(activation_url, data=json.dumps(activation_payload), headers=headers).text
-        #print(activation_response)
         activation_result = json.loads(activation_response)
         if "detail" in activation_result:
             print(str(activation_result['detail']))
@@ -48,7 +46,7 @@ while True:
     try:
         email = str(input("Please Input your Email: "))
         if registration(email) != -1:
-            print("The email you input is: " + email + "\nUser ID: " + str(registration(email)))
+            print("The email you input is: " + email + "\nYour user ID is: " + str(registration(email)))
             activation_code = int(input("An activation code had been sent to your Email!\nPlease input the activation code here: "))
             activation(activation_code)
     except:
