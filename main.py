@@ -16,8 +16,9 @@ def registration(email):
             registration_payload = {"login": email}
             registration_response = requests.post(registration_url, data=json.dumps(registration_payload),headers=headers).text
             response_id = json.loads(registration_response)
+            global user_id
             user_id = int(response_id['id'])
-            return user_id
+            print("The email you input is: " + email + "\nYour user ID is: " + str(user_id))
         except:
             print("Something wrong with registration,please contact our staff.")
     else:
@@ -27,7 +28,7 @@ def registration(email):
 def activation(activation_code):
     try:
         activation_payload = {"activation_code": str(activation_code)}
-        activation_url = "https://calibear.bebooking.enes.tech/user/" + str(registration(email)) + "/activate/"
+        activation_url = "https://calibear.bebooking.enes.tech/user/" + str(user_id) + "/activate/"
         activation_response = requests.post(activation_url, data=json.dumps(activation_payload), headers=headers).text
         activation_result = json.loads(activation_response)
         if "detail" in activation_result:
@@ -46,7 +47,6 @@ while True:
     try:
         email = str(input("Please Input your Email: "))
         if registration(email) != -1:
-            print("The email you input is: " + email + "\nYour user ID is: " + str(registration(email)))
             activation_code = int(input("An activation code had been sent to your Email!\nPlease input the activation code here: "))
             activation(activation_code)
     except:
