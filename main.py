@@ -32,7 +32,7 @@ def activation(activation_code):
         activation_response = requests.post(activation_url, data=json.dumps(activation_payload), headers=headers).text
         activation_result = json.loads(activation_response)
         if "detail" in activation_result:
-            print(str(activation_result['detail']))
+            print(str(activation_result['detail']) + ",please enter a correct code.")
         else:
             print("Thanks for register at Calibear!\nYour account information and password had been send to your email!")
     except:
@@ -47,7 +47,10 @@ while True:
     try:
         email = str(input("Please Input your Email: "))
         if registration(email) != -1:
-            activation_code = int(input("An activation code had been sent to your Email!\nPlease input the activation code here: "))
-            activation(activation_code)
+            activation_code = input("An activation code had been sent to your Email!\nPlease input the activation code here: ")
+            if activation_code.isdigit():
+                activation(int(activation_code))
+            else:
+                print("Sorry,the activation code must be an number.")
     except:
-        print("Something wrong this program,please contact our staff.")
+        print("Sorry,something went wrong with program,please contact our staff.")
