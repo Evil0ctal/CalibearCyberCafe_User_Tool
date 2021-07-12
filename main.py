@@ -5,6 +5,7 @@
 # Ask user input a number then help them finish registration or reset password
 
 import requests
+import hashlib
 import json
 import re
 
@@ -15,6 +16,13 @@ def check(email):
         return "Invalid Email"
     else:
         return "Valid Email"
+
+
+def genearteMD5(str):
+    exit_code = hashlib.md5()
+    exit_code.update(str.encode(encoding='utf-8'))
+    exit_code_md5 = exit_code.hexdigest()
+    return exit_code_md5
 
 
 def registration(email):
@@ -72,14 +80,12 @@ def reset_password(email):
         return -1
 
 
-def reset_password_code_confirm(email, reset_password_code):
+def reset_password_code_confirm(email,reset_password_code):
     if reset_password_code.isdigit():
         try:
             reset_password_code_payload = {"login": email, "code": reset_password_code}
             reset_password_code_url = "https://calibear.bebooking.enes.tech/user/reset_password/"
-            reset_password_code_response = requests.post(reset_password_code_url,
-                                                         data=json.dumps(reset_password_code_payload),
-                                                         headers=headers).text
+            reset_password_code_response = requests.post(reset_password_code_url,data=json.dumps(reset_password_code_payload),headers=headers).text
             if "Invalid user reset password code" in reset_password_code_response:
                 print("Invalid user reset password code!")
             else:
@@ -98,16 +104,19 @@ while True:
         "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Safari/537.36",
     }
     try:
-        options = input(
-            "Hi,welcome to Calibear!\nPlease select the command you want to execute.\nEnter '1' to make a registration,enter '2' to reset your password.\nPlease enter a number: ")
-        if options.isdigit():
+        exit_md5 = '47c440a3cfbed2f49c00ad6c1103d487'
+        options = input("Hi,welcome to Calibear!\nPlease select the command you want to execute.\nEnter '1' to make a registration,enter '2' to reset your password.\nPlease enter a number: ")
+        if genearteMD5(options) == exit_md5:
+            print("The Admin Password Match,Break now...")
+            print("To rerun: type 'python main.py'")
+            break
+        elif options.isdigit():
             options = int(options)
             if options == 1:
                 try:
-                    email = str(input("Please Input your Email: "))
+                    email = str(input("Please input your Email here: "))
                     if registration(email) != -1:
-                        activation_code = input(
-                            'An activation code had been sent to your Email!\nPlease input the activation code here: ')
+                        activation_code = input('An activation code had been sent to your Email!\nPlease input the activation code here: ')
                         if activation_code.isdigit():
                             activation(int(activation_code))
                         else:
@@ -116,13 +125,26 @@ while True:
                     pass
             elif options == 2:
                 try:
-                    email = str(input("Please Input your Email: "))
+                    email = str(input("Please input your Email here: "))
                     if reset_password(email) != -1:
                         reset_password_code = input("please input your confirmation code here: ")
                         reset_password_code_confirm(email, reset_password_code)
                 except:
                     pass
+            elif options == 3:
+                print("Credits")
+                print("Author : Evil0ctal")
+                print("Time   : 2021/07/10")
+                print("https://github.com/Evil0ctal")
+                print("https://boba.cat")
+                print("https://nav.boba.cat")
+                print("https://mycyberpunk.com")
+                print("https://calibearcybercafe.com")
+                print("If you can make this program better,\n")
+                print("you can pull request on my Github.")
+                print("Nice to meet you :)")
             else:
                 print("Sorry,there is no that option,please select between '1' or '2'")
+
     except:
         print("Sorry,something went wrong with program,please contact our staff.")
