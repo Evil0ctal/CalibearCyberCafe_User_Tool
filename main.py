@@ -45,6 +45,9 @@ def registration(email):
             registration_payload = {"login": email}
             registration_response = requests.post(registration_url, data=json.dumps(registration_payload),headers=headers).text
             response_id = json.loads(registration_response)
+            # 请求失败参考(用户已存在)
+            # Payload: {"login":"1804618647@qq.com"}
+            # Response: {"login":["User with such email already exists"],"code":-2}
             if response_id['login'] != email:
                 clear()
                 print('')
@@ -53,6 +56,10 @@ def registration(email):
                 print("Please try another email or reset your password!")
                 return -1
             else:
+                # 请求成功参考（用户未注册）
+                # Payload: {"login":"example@example.com"}
+                # Response: {"id":3148,"login":"example@example.com"}
+                # 勿删，该变量用于用户激活
                 global user_id
                 user_id = int(response_id['id'])
                 clear()
@@ -78,13 +85,21 @@ def activation(activation_code):
         activation_url = "https://calibear.bebooking.enes.tech/user/" + str(user_id) + "/activate/"
         activation_response = requests.post(activation_url,data=json.dumps(activation_payload),headers=headers).text
         activation_result = json.loads(activation_response)
+        # 返回参数
         if "detail" in activation_result:
+            # 请求失败参考（验证码错误）
+            # Payload: {activation_code: "111"}
+            # Response: {"detail":"Invalid user validation code","code":1216}
             clear()
             print('')
             print("[Error]")
             print("Invalid user validation code!")
             print("please enter the correct code.")
         else:
+            # 请求成功参考（验证码正确）
+            # Payload: {activation_code: "885302"}
+            # Response: {"token":"XXXXXXXXXXXXXXXXXXXXXXXXXXX"}
+            # {"id":3149,"first_name":null,"last_name":null,"amount":"0.00","login":"dthlsz@northsixty.com"}
             clear()
             # 干，QRcode太大了，有时候不能正常显示
             print("[Order Online QR-code]")
@@ -118,12 +133,18 @@ def reset_password(email):
             if reset_password_response != '':
                 reset_password_result = json.loads(reset_password_response)
                 if reset_password_result['code'] == -2:
+                    # 请求失败参考（用户不存在）
+                    # Payload: {activation_code: "111"}
+                    # Response: {"detail":"Invalid user validation code","code":1216}
                     clear()
                     print('')
                     print("[Error]")
                     print("Sorry,User with such login does not exists")
                     return -1
             else:
+                # 请求成功参考（用户存在）
+                # Payload: {login: "dthlsz@northsixty.com"}
+                # Response: null
                 clear()
                 print('')
                 print("You received a confirmation code on your Email.")
@@ -148,11 +169,18 @@ def reset_password_code_confirm(email,reset_password_code):
             reset_password_code_url = "https://calibear.bebooking.enes.tech/user/reset_password/"
             reset_password_code_response = requests.post(reset_password_code_url,data=json.dumps(reset_password_code_payload),headers=headers).text
             if "Invalid user reset password code" in reset_password_code_response:
+                # 请求失败参考（验证码不正确）
+                # Payload: {login: "dthlsz@northsixty.com", code: "99999"}
+                # Response: {"detail":"Invalid user reset password code","code":1910}
                 clear()
                 print('')
                 print("[Error]")
                 print("Invalid user reset password code!")
             else:
+                # 请求成功参考（验证码正确）
+                # Payload: {login: "dthlsz@northsixty.com", code: "984363"}
+                # Response: {"token":"XXXXXXXXXXXXXXXXXXXX"}
+                # {"id":3149,"first_name":null,"last_name":null,"amount":"0.00","login":"dthlsz@northsixty.com"}
                 clear()
                 print('')
                 print("[Password Reset Complete]")
