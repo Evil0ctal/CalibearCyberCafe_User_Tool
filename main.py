@@ -246,7 +246,7 @@ def main():
                     print("Sorry,there is no that option,please select between '1' to '4'")
             else:
                 error_do()
-                print("Sorry,there is no that option,please select between '1' or '4'")
+                print("Sorry,there is no that option,please select between '1' to '4'")
 
         except:
             error_do()
