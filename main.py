@@ -14,6 +14,7 @@ import sys
 import re
 import os
 
+
 # 正则检查用户输入是否为Email格式
 def check(email):
     regex = re.compile(r"[^@]+@[^@]+\.[^@]+")
@@ -21,6 +22,7 @@ def check(email):
         return "Invalid Email"
     else:
         return "Valid Email"
+
 
 # 清空控制台残留消息
 def clear():
@@ -30,6 +32,7 @@ def clear():
     os.system('cls')
     sys.stdout = oldstdout
 
+
 # 生成MD5校验管理员密码
 def genearteMD5(str):
     exit_code = hashlib.md5()
@@ -37,19 +40,22 @@ def genearteMD5(str):
     exit_code_md5 = exit_code.hexdigest()
     return exit_code_md5
 
+
 # 错误清理
 def error_do():
     clear()
     print('')
     print("[Error]")
-    
+
+
 # 提交注册POST请求
 def registration(email):
     if check(email) == "Valid Email":
         try:
             registration_url = "https://calibear.bebooking.enes.tech/user/"
             registration_payload = {"login": email}
-            registration_response = requests.post(registration_url, data=json.dumps(registration_payload),headers=headers).text
+            registration_response = requests.post(registration_url, data=json.dumps(registration_payload),
+                                                  headers=headers).text
             response_id = json.loads(registration_response)
             # 请求失败参考(用户已存在)
             # Payload: {"login":"1804618647@qq.com"}
@@ -78,12 +84,13 @@ def registration(email):
         print("Please enter an valid email address.")
         return -1
 
+
 # 提交激活POST请求
 def activation(activation_code):
     try:
         activation_payload = {"activation_code": str(activation_code)}
         activation_url = "https://calibear.bebooking.enes.tech/user/" + str(user_id) + "/activate/"
-        activation_response = requests.post(activation_url,data=json.dumps(activation_payload),headers=headers).text
+        activation_response = requests.post(activation_url, data=json.dumps(activation_payload), headers=headers).text
         activation_result = json.loads(activation_response)
         # 返回参数
         if "detail" in activation_result:
@@ -112,6 +119,7 @@ def activation(activation_code):
     except:
         error_do()
         print("Something wrong with activation,please contact our staff.")
+
 
 # 提交重置密码POST请求
 def reset_password(email):
@@ -146,13 +154,16 @@ def reset_password(email):
         print("Please enter an valid email address.")
         return -1
 
+
 # 提交重置密码验证码POST请求
-def reset_password_code_confirm(email,reset_password_code):
+def reset_password_code_confirm(email, reset_password_code):
     if reset_password_code.isdigit():
         try:
             reset_password_code_payload = {"login": email, "code": reset_password_code}
             reset_password_code_url = "https://calibear.bebooking.enes.tech/user/reset_password/"
-            reset_password_code_response = requests.post(reset_password_code_url,data=json.dumps(reset_password_code_payload),headers=headers).text
+            reset_password_code_response = requests.post(reset_password_code_url,
+                                                         data=json.dumps(reset_password_code_payload),
+                                                         headers=headers).text
             if "Invalid user reset password code" in reset_password_code_response:
                 # 请求失败参考（验证码不正确）
                 # Payload: {login: "dthlsz@northsixty.com", code: "99999"}
@@ -188,7 +199,8 @@ def main():
             print("\033[0m\033[33m[+]\033[0m \033[32mEnter '1' to make a registration.\033[0m")
             print("\033[33m[+]\033[0m \033[32mEnter '2' to reset your password.\033[0m")
             print("\033[33m[+]\033[0m \033[32mEnter '3' to show online menu QR-code.\033[0m")
-            print("\033[33m[+]\033[0m \033[32mEnter '4' to view more info.\033[0m")
+            print("\033[33m[+]\033[0m \033[32mEnter '4' to use this APP online.\033[0m")
+            print("\033[33m[+]\033[0m \033[32mEnter '5' to view more info.\033[0m")
             print("\033[33m[+]\033[0m \033[32mPress 'Enter key' to skip or continue.\033[0m")
             print("\033[33m[+]\033[0m \033[32mSelect option again after skip.\033[0m")
             print("\033[32m____________________________________________________________________________\033[0m")
@@ -232,8 +244,15 @@ def main():
                     clear()
                     print('')
                     print("[Order Online QR-code]")
+                    print('')
                     qrcode_terminal.draw("https://calibearcybercafe.applova.menu/")
                 elif options == 4:
+                    clear()
+                    print('')
+                    print("[Scan the QR-code use this APP online]")
+                    print('')
+                    qrcode_terminal.draw("https://user.calibearcybercafe.com")
+                elif options == 5:
                     clear()
                     print('')
                     print("\033[5;31;42m# Author")
