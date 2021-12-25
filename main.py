@@ -201,7 +201,7 @@ def main():
             print("\033[33m[+]\033[0m \033[32mEnter '3' to show online menu QR-code.\033[0m")
             print("\033[33m[+]\033[0m \033[32mEnter '4' to use this APP online.\033[0m")
             print("\033[33m[+]\033[0m \033[32mEnter '5' to view more info.\033[0m")
-            print("\033[33m[+]\033[0m \033[32mPress 'Enter key' to skip or continue.\033[0m")
+            print("\033[33m[+]\033[0m \033[32mPress 'Enter' to skip or continue.\033[0m")
             print("\033[33m[+]\033[0m \033[32mSelect option again after skip.\033[0m")
             print("\033[32m____________________________________________________________________________\033[0m")
             print('')
@@ -245,7 +245,7 @@ def main():
                     print('')
                     print("[Order Online QR-code]")
                     print('')
-                    qrcode_terminal.draw("https://calibearcybercafe.applova.menu/")
+                    qrcode_terminal.draw("https://ordernow.applova.io/consumer-portal/business/NQHRCEY2NSZSW/landing")
                 elif options == 4:
                     clear()
                     print('')
